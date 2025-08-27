@@ -54,7 +54,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.test.espresso.base.Default
+import com.example.custhomepagetest.payment.TngPaymentScreen
+import com.example.custhomepagetest.payment.TngPaymentSuccess
+
 import com.example.custhomepagetest.ui.theme.CustHomePageTestTheme
 
 data class Menu(
@@ -97,11 +103,46 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     HomeScreen(points = 0, modifier = Modifier.padding(innerPadding))
                 }
+                //App()
             }
         }
     }
 }
 
+//Navigation for payment
+@Composable
+fun App(){
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "tngPayment"
+    ) {
+        composable("tngPayment") {
+            TngPaymentScreen(
+                amount = 15.0,
+                phoneNumber = "+60123456789",
+                onPayClick = { formattedAmount->
+                    navController.navigate("tngsuccess/$formattedAmount")
+                },
+                onBackClick = {
+
+                }
+            )
+        }
+
+        composable("tngsuccess/{formattedAmount}") { backStackEntry ->
+            val formattedAmount = backStackEntry.arguments?.getString("formattedAmount") ?: ""
+            TngPaymentSuccess(
+                formattedAmount = formattedAmount,
+                onReturnClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+    }
+}
 @Composable
 fun HomeScreen(points: Int, modifier: Modifier = Modifier) {
     Box (Modifier.fillMaxSize()) {
