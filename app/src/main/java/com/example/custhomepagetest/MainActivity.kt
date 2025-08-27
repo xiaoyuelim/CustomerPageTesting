@@ -58,8 +58,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.test.espresso.base.Default
+import com.example.custhomepagetest.payment.BankPaymentScreen
 import com.example.custhomepagetest.payment.TngPaymentScreen
 import com.example.custhomepagetest.payment.TngPaymentSuccess
+import com.example.custhomepagetest.payment.BankPaymentSuccess
 
 import com.example.custhomepagetest.ui.theme.CustHomePageTestTheme
 
@@ -141,8 +143,28 @@ fun App(){
             )
         }
 
+        composable("bankPayment") {
+            BankPaymentScreen(
+                amount = 15.0,
+                onReject = {},
+                onApprove = { formattedAmount->
+                    navController.navigate("banksuccess/$formattedAmount")
+                },
+            )
+        }
+
+        composable("banksuccess/{formattedAmount}") { backStackEntry ->
+            val formattedAmount = backStackEntry.arguments?.getString("formattedAmount") ?: ""
+            BankPaymentSuccess(
+                formattedAmount = formattedAmount,
+                transactionDate = "15 July 2025",
+                onDoneClick={}
+            )
+        }
+
     }
 }
+
 @Composable
 fun HomeScreen(points: Int, modifier: Modifier = Modifier) {
     Box (Modifier.fillMaxSize()) {
